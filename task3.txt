@@ -1,0 +1,83 @@
+import re
+
+class PasswordStrengthChecker:
+    def __init__(self, password):
+        self.password = password
+
+    def check_length(self):
+        """ Check if the password length is at least 8 characters. """
+        return len(self.password) >= 8
+
+    def check_uppercase(self):
+        """ Check if the password contains at least one uppercase letter. """
+        return bool(re.search(r'[A-Z]', self.password))
+
+    def check_lowercase(self):
+        """ Check if the password contains at least one lowercase letter. """
+        return bool(re.search(r'[a-z]', self.password))
+
+    def check_numbers(self):
+        """ Check if the password contains at least one digit. """
+        return bool(re.search(r'[0-9]', self.password))
+
+    def check_special_chars(self):
+        """ Check if the password contains at least one special character. """
+        return bool(re.search(r'[\W_]', self.password))
+
+    def evaluate_password(self):
+        """ Evaluate the password based on the defined criteria. """
+        score = 0
+        total_criteria = 5
+
+        # Check each criterion and update the score
+        if self.check_length():
+            score += 1
+        if self.check_uppercase():
+            score += 1
+        if self.check_lowercase():
+            score += 1
+        if self.check_numbers():
+            score += 1
+        if self.check_special_chars():
+            score += 1
+
+        return score, total_criteria
+
+    def get_strength_message(self):
+        """ Provide feedback based on the password's score. """
+        score, total_criteria = self.evaluate_password()
+
+        if score == total_criteria:
+            return "Strong Password: Your password meets all security criteria."
+        elif score >= 4:
+            return "Medium Strength Password: Your password is decent, but could be improved."
+        else:
+            return "Weak Password: Your password lacks critical security elements."
+
+    def detailed_feedback(self):
+        """ Give detailed feedback on each password criterion. """
+        feedback = []
+        
+        if not self.check_length():
+            feedback.append("- Password is too short (minimum 8 characters).")
+        if not self.check_uppercase():
+            feedback.append("- Missing at least one uppercase letter.")
+        if not self.check_lowercase():
+            feedback.append("- Missing at least one lowercase letter.")
+        if not self.check_numbers():
+            feedback.append("- Missing at least one number.")
+        if not self.check_special_chars():
+            feedback.append("- Missing at least one special character.")
+
+        if not feedback:
+            feedback.append("Your password meets all the criteria!")
+        
+        return "\n".join(feedback)
+
+# Example usage:
+password = input("Enter a password to assess its strength: ")
+
+checker = PasswordStrengthChecker(password)
+print(checker.get_strength_message())
+print("Detailed Feedback:")
+print(checker.detailed_feedback())
